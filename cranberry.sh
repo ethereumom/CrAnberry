@@ -11,10 +11,10 @@ if [ "$(id -u)" != '0' ]; then
 fi
 
 wdir="/usr/local/cranberry"
-bind_dir="/opt/google/containers/android/rootfs/android-data/data/adb/su"
-android_rootfs="/opt/google/containers/android/rootfs"
+bind_dir="/opt/google/vms/android/rootfs/android-data/data/adb/su"
+android_rootfs="/opt/google/vms/android/rootfs"
 device_arch=$(uname -m)
-# abiVer=$(cat /opt/google/containers/android/rootfs/root/system/build.prop | grep "ro.build.version.sdk=")
+# abiVer=$(cat /opt/google/vms/android/rootfs/root/system/build.prop | grep "ro.build.version.sdk=")
 android_su_dl="https://download.chainfire.eu/1220/SuperSU/SR5-SuperSU-v2.82-SR5-20171001224502.zip?retrieve_file=1"
 busybox_arm_dl="https://busybox.net/downloads/binaries/1.28.1-defconfig-multiarch/busybox-armv7l"
 busybox_x86_dl="https://busybox.net/downloads/binaries/1.28.1-defconfig-multiarch/busybox-i686"
@@ -34,37 +34,37 @@ fi
 
 rm /etc/cranberry-test
 
-if [ -L "/opt/google/containers/android/system.raw.img" ]; then
+if [ -L "/opt/google/vms/android/system.raw.img" ]; then
     echo "System Image already replaced with symlink?"
     echo " "
-    rm /opt/google/containers/android/system.raw.img
-    if [ -e "/opt/google/containers/android/system.original.img" ]; then
+    rm /opt/google/vms/android/system.raw.img
+    if [ -e "/opt/google/vms/android/system.original.img" ]; then
         echo "Has CrAnberry already been run? No problem. I can correct it."
         echo " "
-        rm /opt/google/containers/android/system.raw.img
-        mv /opt/google/containers/android/system.original.img /opt/google/containers/android/system.raw.img
+        rm /opt/google/vms/android/system.raw.img
+        mv /opt/google/vms/android/system.original.img /opt/google/vms/android/system.raw.img
 
     else
         echo "There's a symlink in place for the android image, but no original image to work with?"
-        echo "Get a copy of your device's system.raw.img and put it in \"/opt/google/containers/android/\""
+        echo "Get a copy of your device's system.raw.img and put it in \"/opt/google/vms/android/\""
         echo " "
-        rm /opt/google/containers/android/system.raw.img
+        rm /opt/google/vms/android/system.raw.img
         exit 1
     fi
     
-elif [ -e "/opt/google/containers/android/system.original.img" ]; then
+elif [ -e "/opt/google/vms/android/system.original.img" ]; then
     if [ ! -e "$android_rootfs/android-data/data/app" ]; then
         echo "Android Container not running after what seems like a previous attempt."
         echo "Reboot before running this script again.\n"
         echo " "
-        mv /opt/google/containers/android/system.original.img /opt/google/containers/android/system.raw.img
+        mv /opt/google/vms/android/system.original.img /opt/google/vms/android/system.raw.img
         exit 1
     else 
-        mv /opt/google/containers/android/system.original.img /opt/google/containers/android/system.raw.img
+        mv /opt/google/vms/android/system.original.img /opt/google/vms/android/system.raw.img
     fi
     
-elif [ ! -e "/opt/google/containers/android/system.raw.img" ]; then
-    echo "No android system image present in /opt/google/containers/android/"
+elif [ ! -e "/opt/google/vms/android/system.raw.img" ]; then
+    echo "No android system image present in /opt/google/vms/android/"
     echo " "
     exit 1
         
@@ -113,11 +113,11 @@ mount -o loop,rw,sync $wdir/cranberry.img $wdir/new
 
 # Move the existing image ...
 
-mv /opt/google/containers/android/system.raw.img /opt/google/containers/android/system.original.img
+mv /opt/google/vms/android/system.raw.img /opt/google/vms/android/system.original.img
 
 # ... and mount it
 
-mount -o loop,ro /opt/google/containers/android/system.original.img $wdir/original
+mount -o loop,ro /opt/google/vms/android/system.original.img $wdir/original
 
 # Set the SELinux policy to permissive
 
@@ -508,7 +508,7 @@ rm /home/chronos/user/Downloads/policy.30_new
 
 umount $wdir/new
 mv $wdir/cranberry.img $wdir/system.rooted.img
-ln -s /usr/local/cranberry/system.rooted.img /opt/google/containers/android/system.raw.img
+ln -s /usr/local/cranberry/system.rooted.img /opt/google/vms/android/system.raw.img
 
 echo "Reboot and enjoy!"
 echo " "
